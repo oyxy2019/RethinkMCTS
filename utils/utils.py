@@ -5,7 +5,7 @@ import copy
 import random
 import numpy as np
 from sklearn.manifold import TSNE
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import warnings
 import torch.nn.functional as F
 import transformers
@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 
 def get_raw_data_path():
-    return '/home/xxx'
+    return '/home/yinkh/linyy/llm/ours/dataset'
 
 
 def get_proj_path(proj_name='RethinkMCTS'):

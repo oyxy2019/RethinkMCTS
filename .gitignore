@@ -24,3 +24,7 @@ venv.bak/
 # User defination
 Experiment_logs/
 data/
+*.pyc
+*.log
+*.json
+tracing_log/

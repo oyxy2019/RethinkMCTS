@@ -13,14 +13,15 @@ import shutil
 # CUDA devices
 os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
-# openai keys
-import openai
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
-API_KEY = "xxx"  # lqy
-openai.api_key = API_KEY
 
-os.environ["OPENAI_API_KEY"] = API_KEY
+# openai keys
+import openai
+# os.environ['OPENAI_API_KEY'] = "EMPTY"
+# os.environ['OPENAI_API_BASE'] = "http://localhost:8000/v1"
+from dotenv import load_dotenv
+load_dotenv('/home/yinkh/linyy/llm/ours/src/.env')
 
 # imports
 import torch
@@ -46,12 +47,12 @@ def main():
     parser = ArgumentParser("RethinkMCTS")
     parser.add_argument('-eid', '--experiment-idx', type=int, default=0, help='Experiment id for one model')
     parser.add_argument('-d', '--dataset', type=str, default='humaneval', choices=['apps', 'humaneval'])
-    parser.add_argument('-m', '--model', type=str, default='rethinkmcts',
+    parser.add_argument('-m', '--model', type=str, default='ToT',
                         choices=['mcts_line', 'mcts_token', 'bs', 'sample', 'ldb', 'mcts_thought', 'mcts_code',
                                  'rethinkmcts', 'ToT', 'LATS', 'RethinkMCTSNoVerb',
                                  'RAP', 'LDB', 'Reflexion'])
     parser.add_argument("--rollout", default=16, type=int, help="The maximum number of rollouts.")
-    parser.add_argument("--arch", default="gpt4o-mini",
+    parser.add_argument("--arch", default="Qwen2.5-7B-Instruct",
                         choices=["gpt3.5", "gpt3.5completion", 'gpt4', 'gpt4o-mini', 'gpt4o'])
     parser.add_argument('--mctsvalue', type=str, default='test',
                         choices=['test', 'gpteval', 'gptevalTC', 'verbalMemory', 'verbalMemoHistory'],
@@ -113,7 +114,7 @@ def main():
     parser.add_argument('--rethink_success_nums', type=int, default=0, help='The success number of rethink')
     parser.add_argument('--no_rethink_success_num', type=int, default=0, help='The success number of no rethink')
     # --------------------------------------------------------------------------------------------
-    parser.add_argument('--seed', type=int, default=0, help='random seed (default: 0)')
+    parser.add_argument('--seed', type=int, default=42, help='random seed (default: 0)')
     parser.add_argument('--cudaDevice', type=str, default='cuda')
 
     args = parser.parse_args()
@@ -139,7 +140,9 @@ def main():
     if "gpt3.5" in args.arch or 'gpt4' in args.arch:
         args.loadArchDir = f"{args.arch}"
     else:
-        raise ValueError('wrong arch!')
+        args.arch = "ep-20250217160950-sxj5x"
+        pass
+        # raise ValueError('wrong arch!')
 
     if args.experiment_idx == 2:
         args.rerun = True

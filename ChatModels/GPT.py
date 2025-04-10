@@ -55,7 +55,7 @@ class GPTChat:
         self.time_stamps = []
         self.ts_mode = args.ts_mode
         self.horizon = args.horizon
-        self.client = OpenAI()
+        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY", ""), base_url=os.getenv("OPENAI_API_BASE", ""),)
         self.terminal_token = self.tokenizer.encode('<|endoftext|>', allowed_special={'<|endoftext|>'})[0]
         self.width = args.width
         self.top_k_cache_steps = args.top_k_cache_steps
@@ -73,8 +73,8 @@ class GPTChat:
         elif self.args.arch == 'gpt4o':
             model_name = 'gpt-4o'
         else:
-            print(f'Model {self.args.arch} not implemented error!')
-            assert 0
+            model_name = self.args.arch
+
         for ti in range(20):
             sleep_interval = 7
             try:
@@ -91,7 +91,7 @@ class GPTChat:
                     stop=stop
                 )
             except Exception as e:
-                print("GPT Error:", str(e))
+                print("GPT Error2:", str(e))
                 if "context_length_exceeded" in str(e):
                     messages = change_messages(self.tokenizer, messages, 8000)
                     print("AFTER CHANGE MESSAGE LEN:", len(messages))
@@ -134,8 +134,8 @@ class GPTChat:
         sys_msg = "You are a helpful code generator that generate code to complete the given problem."
         if system_message:
             sys_msg = system_message
-        for ti in range(20):
-            sleep_interval = 7
+        for ti in range(1):
+            sleep_interval = 1
             try:
                 if self.args.arch == 'gpt3.5':
                     response = self.client.chat.completions.create(
@@ -204,13 +204,22 @@ class GPTChat:
                     )
                     message = response.choices[0].text
                     log_prob = response.choices[0].logprobs.top_logprobs
+                else:
+                    response = self.client.chat.completions.create(
+                        model=self.args.arch,
+                        messages=[{"role": "system", "content": sys_msg}, {"role": "user", "content": prompt}],
+                        max_tokens=max_length,
+                        temperature=temperature,
+                    )
+                    message = response.choices[0].message.content
+                    log_prob = []
 
                 input_token_num = len(self.tokenizer.encode(prompt, allowed_special={'<|endoftext|>'}))
                 output_token_num = len(self.tokenizer.encode(message, allowed_special={'<|endoftext|>'}))
                 self.args.total_input_token_num += input_token_num
                 self.args.total_output_token_num += output_token_num
             except Exception as e:
-                print("GPT Error:", str(e))
+                print("GPT Error1:", str(e))
                 if "context_length_exceeded" in str(e):
                     tmp_shorter = self.tokenizer.encode(prompt, allowed_special={'<|endoftext|>'})[:4096]
                     prompt = self.tokenizer.decode(tmp_shorter)

@@ -4,8 +4,8 @@ from utils import *
 import time
 import itertools
 from models import *
-from torcheval.metrics import HitRate, ReciprocalRank
-import torchmetrics
+# from torcheval.metrics import HitRate, ReciprocalRank
+# import torchmetrics
 from dataSet import *
 from tqdm import tqdm
 from math import sqrt, log
@@ -22,7 +22,7 @@ class ToT:
         self.sample_nums = 0
         self.gamma = 0.9
         self.save_mid_json = []
-        if 'gpt3.5' in args.arch or 'gpt4' in args.arch:
+        if 'gpt3.5' in args.arch or 'gpt4' in args.arch or True:
             self.tokenizer = tiktoken.get_encoding("cl100k_base")
             self.generator = GPTChat(args.arch, self.tokenizer, args, self.save_mid_json)
         else:

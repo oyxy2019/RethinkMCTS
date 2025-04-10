@@ -215,7 +215,7 @@ def eval_and_save_problems(args, indices):
     return ret_results
 
 
-def get_exp_results(exp_dir_name, exp_labels, playlist, disjoint_flag=False):
+def get_exp_results(exp_dir_name, exp_labels, playlist, disjoint_flag=False, dataset=None, APPDifficulty=None):
     import argparse
 
     parser = argparse.ArgumentParser(description="Get experiments results")
@@ -243,6 +243,16 @@ def get_exp_results(exp_dir_name, exp_labels, playlist, disjoint_flag=False):
         # for id in tmp_indices:
         #     if id < 4080:
         #         indices.append(id)
+
+        # 新增难度筛选逻辑
+        if dataset == 'apps' and APPDifficulty:
+            if APPDifficulty == 'introductory':
+                indices = [idx for idx in indices if 4000 <= idx <= 4999]
+            elif APPDifficulty == 'interview':
+                indices = [idx for idx in indices if 0 <= idx <= 2999]
+            elif APPDifficulty == 'competition':
+                indices = [idx for idx in indices if 3000 <= idx <= 3999]
+
 
         results = eval_and_save_problems(args, indices)
         all_results.append(results)
@@ -384,21 +394,28 @@ def get_exp_results(exp_dir_name, exp_labels, playlist, disjoint_flag=False):
 if __name__ == "__main__":
     # APPS
     APPS_dir_name = f'{get_proj_path()}/results/apps/'
-    APPS_labels = ['0 exp_0_name',
-                   '1 exp_1_name',
-                   '2 '
-                   ]
+    APPS_labels = [
+        '0 exp_0_name',
+        '1 exp_1_name',
+        '2 exp_2_name'
+    ]
 
     # Humaneval
     Humaneval_dir_name = f'{get_proj_path()}/results/humaneval/'
-    Humaneval_labels = ['0 ',
-                        ]
+    Humaneval_labels = [
+        '0 ',
+    ]
 
     dataset = 'apps'
     # dataset = 'humaneval'
-    playlist = [2]
+    playlist = [0]
 
-    disjoint_flag = True
+    APPDifficulty = None
+    APPDifficulty = 'introductory'
+    APPDifficulty = 'interview'
+    APPDifficulty = 'q'
+
+    disjoint_flag = False
 
     if dataset == 'apps':
         ma_flag = True
@@ -412,5 +429,11 @@ if __name__ == "__main__":
         exp_dir_name = Humaneval_dir_name
         exp_labels = Humaneval_labels
 
-    # get_exp_results
-    get_exp_results(exp_dir_name, exp_labels, playlist, disjoint_flag)
+    get_exp_results(
+        exp_dir_name=exp_dir_name,
+        exp_labels=exp_labels,
+        playlist=playlist,
+        disjoint_flag=disjoint_flag,
+        dataset=dataset,
+        APPDifficulty=APPDifficulty
+    )
