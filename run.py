@@ -21,7 +21,7 @@ import openai
 # os.environ['OPENAI_API_KEY'] = "EMPTY"
 # os.environ['OPENAI_API_BASE'] = "http://localhost:8000/v1"
 from dotenv import load_dotenv
-load_dotenv('/home/yinkh/linyy/llm/ours/src/.env')
+load_dotenv('/home/yinkh/linyy/llm/ours/configs/.env')
 
 # imports
 import torch
@@ -45,28 +45,28 @@ def str2bool(v):
 
 def main():
     parser = ArgumentParser("RethinkMCTS")
-    parser.add_argument('-eid', '--experiment-idx', type=int, default=0, help='Experiment id for one model')
-    parser.add_argument('-d', '--dataset', type=str, default='humaneval', choices=['apps', 'humaneval'])
-    parser.add_argument('-m', '--model', type=str, default='ToT',
+    parser.add_argument('-eid', '--experiment-idx', type=int, default=999, help='Experiment id for one model')
+    parser.add_argument('-d', '--dataset', type=str, default='apps', choices=['apps', 'humaneval'])
+    parser.add_argument('-m', '--model', type=str, default='rethinkmcts',
                         choices=['mcts_line', 'mcts_token', 'bs', 'sample', 'ldb', 'mcts_thought', 'mcts_code',
                                  'rethinkmcts', 'ToT', 'LATS', 'RethinkMCTSNoVerb',
                                  'RAP', 'LDB', 'Reflexion'])
-    parser.add_argument("--rollout", default=16, type=int, help="The maximum number of rollouts.")
-    parser.add_argument("--arch", default="Qwen2.5-7B-Instruct",
+    parser.add_argument("--rollout", default=1, type=int, help="The maximum number of rollouts.")
+    parser.add_argument("--arch", default=os.environ.get('MODEL_NAME', 'Qwen2.5-14B-Instruct'), type=str,
                         choices=["gpt3.5", "gpt3.5completion", 'gpt4', 'gpt4o-mini', 'gpt4o'])
     parser.add_argument('--mctsvalue', type=str, default='test',
                         choices=['test', 'gpteval', 'gptevalTC', 'verbalMemory', 'verbalMemoHistory'],
                         help='The value function to use for MCTS.')
     parser.add_argument("--loadArchDir", default=f"", type=str)
     parser.add_argument("--save", type=str, default="./results", help="Directory to save generated code.")
-    parser.add_argument('--rerun', action='store_true', default=False,
+    parser.add_argument('--rerun', action='store_true', default=True,
                         help="If True, rerun if the output file already exists.")
     parser.add_argument('--debug', type=str2bool, default=False)
     parser.add_argument("--small_part_run", type=str2bool, default=True,
                         help="If True, the questions that all methods pass by gpt3.5 could be avoid. Only for advanced methods.")
     parser.add_argument('--json_save_all', type=str2bool, default=False, help='If True, save all json files.')
     # -------------------------------------------------------------------------------------------- dataset
-    parser.add_argument("-i", "--index", default=None,
+    parser.add_argument("-i", "--index", default=4000,
                         type=int)
     parser.add_argument("--start", default=4000, type=int)
     parser.add_argument("--end", default=4100, type=int)

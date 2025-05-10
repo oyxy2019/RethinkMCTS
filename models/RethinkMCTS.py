@@ -521,7 +521,7 @@ class RethinkMCTS:
             next_state = s + a
         else:
             next_state = s + [a]
-        if self.generator.terminal_token in a or len(next_state) == self.args.horizon:
+        if self.generator.terminal_token in a or len(next_state) == self.args.horizon:      # TODO: >=
             # either the program finishes, or the state reaches the maximum length
             done = True
         else:

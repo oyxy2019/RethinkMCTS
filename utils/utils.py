@@ -18,7 +18,7 @@ warnings.filterwarnings('ignore')
 
 
 def get_raw_data_path():
-    return '/home/yinkh/linyy/llm/ours/dataset'
+    return '/home/yinkh/linyy/llm/RethinkMCTS/dataProcess'
 
 
 def get_proj_path(proj_name='RethinkMCTS'):

@@ -404,16 +404,19 @@ if __name__ == "__main__":
     Humaneval_dir_name = f'{get_proj_path()}/results/humaneval/'
     Humaneval_labels = [
         '0 ',
+        '1 ',
+        '2 ',
     ]
 
-    dataset = 'apps'
-    # dataset = 'humaneval'
-    playlist = [0]
+    # dataset = 'apps'
+    dataset = 'humaneval'
+
+    playlist = [2]
 
     APPDifficulty = None
-    APPDifficulty = 'introductory'
-    APPDifficulty = 'interview'
-    APPDifficulty = 'q'
+    # APPDifficulty = 'introductory'
+    # APPDifficulty = 'interview'
+    # APPDifficulty = 'competition'
 
     disjoint_flag = False
 
